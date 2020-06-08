@@ -3,3 +3,5 @@
 *.json
 *.tmp
 *.pdf
+*.pyc
+Scripts/__pycache__/LandUse.cpython-37.pyc

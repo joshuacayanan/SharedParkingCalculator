@@ -39,43 +39,21 @@ monthly_factors = pd.read_csv('MonthlyAdjustment.csv', index_col = 0)
 areas = base_parking_demand.index
 land_uses = {name: LandUse(name) for name in areas}
 
-# test_landuse = LandUse('Retail')
-# test_landuse.compute_parking('Weekday', base_parking_demand, customer_employee_split, tod_weekday, noncaptive_weekday, monthly_factors)
-
+#Calculate weekday parking tables and export to Excel
 weekday_parking = {}
 for land_use in land_uses.values():
     weekday_parking[land_use.name] = land_use.compute_parking('Weekday', base_parking_demand, customer_employee_split, tod_weekday, noncaptive_weekday, monthly_factors)
+weekday_parking_table = LandUse.reshape_data(weekday_parking)
 
-weekday_parking_list = []
-for i in range(0, 12):
-    for key, value in weekday_parking.items():
-        weekday_parking_list.append([key] + value[i])
-
-col_names = ['Land Use','6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '0:00', 'Month']
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-times = ['6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '0:00']
+# weekday_parking_list = []
+# for i in range(0, 12):
+#     for key, value in weekday_parking.items():
+#         weekday_parking_list.append([key] + value[i])
 
 
-df = pd.DataFrame(weekday_parking_list, columns = col_names)
 
 
-df = df.melt(['Land Use', 'Month'], value_vars = times, var_name = 'Time', value_name = 'Parking')
-df['Month'] = pd.Categorical(df['Month'], categories = months, ordered = True)
-df['Time'] = pd.Categorical(df['Time'], categories = times, ordered = True)
-df.sort_values(by = ['Month', 'Time'], inplace = True)
-df.reset_index(drop = True, inplace = True)
+# #Reset index to convert multiindex months into columns so seaborn FacetGrid can be used
+# df.reset_index(drop = False, inplace = True)
+# df['Total'] = df.sum(axis = 1, numeric_only = True)
 
-
-df = df.pivot_table(
-    values = 'Parking', index = ['Month', 'Time'], columns = ['Land Use'],
-    fill_value = 0, aggfunc = 'first') #this point is good to export to Excel
-
-#Reset index to convert multiindex months into columns so seaborn FacetGrid can be used
-df.reset_index(drop = False, inplace = True)
-df['Total'] = df.sum(axis = 1, numeric_only = True)
-
-               
-graphs = sns.FacetGrid(data = df, col = 'Month', col_wrap = 4)
-graphs.map(plt.errorbar, 'Time', 'Total')
-graphs.set_titles('{col_name}')
-graphs.xticks(rotation = 90)

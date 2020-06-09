@@ -10,7 +10,7 @@ from LandUse import parking_demand
 from get_inputs import get_working_directory
 
 #Get working directory from command line input
-get_working_directory()
+# get_working_directory()
 
 #Calculate weekday parking tables and export to Excel
 weekday_parking_demand = parking_demand('Weekday')

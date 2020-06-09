@@ -3,13 +3,14 @@
 
 import numpy as np
 import pandas as pd
+from get_inputs import get_inputs
 
-col_names = ['Land Use','6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '0:00', 'Month']
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-times = ['6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '0:00']
+#Call the get_inputs function
+base_parking_demand, customer_employee_split, tod_weekday, tod_weekend, \
+noncaptive_weekday, noncaptive_weekend, monthly_factors = get_inputs()
 
 #Create a Class for ULI land use categories
-class LandUse:
+class LandUse():
     def __init__(self, name):
         self.name = name
 
@@ -65,5 +66,34 @@ class LandUse:
         df.reset_index(drop = True, inplace = True)
        
         df = df.pivot_table(values = 'Parking', index = ['Month', 'Time'], columns = ['Land Use'], \
-                            fill_value = 0, aggfunc = 'first') #this point is good to export to Excel
+                            fill_value = 0, aggfunc = 'first') 
+
+        #Create a new total column
+        df['Total'] =df.sum(axis = 1)
+
         return df
+
+#Dataframe columns in list format
+times = ['6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', \
+        '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '0:00']
+col_names = ['Land Use'] + times + ['Month']
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+#Initialise land use objects 
+areas = base_parking_demand.index
+land_uses = {name: LandUse(name) for name in areas}
+
+#Create function for weekday and weekend parking demand
+def parking_demand(context):
+    if context == 'Weekday':
+        tod, noncaptive = tod_weekday, noncaptive_weekday
+    else:
+        tod, noncaptive = tod_weekend, noncaptive_weekend
+    parking_demand = {}
+    for land_use in land_uses.values():
+        parking_demand[land_use.name] = land_use.compute_parking(context, base_parking_demand, customer_employee_split, \
+                                        tod, noncaptive, monthly_factors)
+    return LandUse.reshape_data(parking_demand)
+
+
+   

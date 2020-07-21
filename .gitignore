@@ -5,3 +5,5 @@
 *.pdf
 *.pyc
 Scripts/__pycache__/LandUse.cpython-37.pyc
+__pycache__
+.vscode/

@@ -5,31 +5,32 @@ import os
 import argparse
 import pandas as pd
 
-# def get_working_directory():
-#     '''
-#     Inputs working directory from user to direct terminal to location of inputs, scripts, and where to save outputs
+def get_working_directory():
+    '''
+    Inputs working directory from user to direct terminal to location of inputs, scripts, and where to save outputs
 
-#     Parameters:
-#       None - simply uses argparse module to craete and store command line arguments
+    Parameters:
+      None - simply uses argparse module to craete and store command line arguments
 
-#     Returns:
-#       parse_args() - data structure that stores the command line arguments object
-#     '''
+    Returns:
+      parse_args() - data structure that stores the command line arguments object
+    '''
 
-#     #Create parser object
-#     parser = argparse.ArgumentParser()
+    #Create parser object
+    parser = argparse.ArgumentParser()
 
-#     #Create 1 command line argument for working directory
-#     parser.add_argument('--dir', type = str, help = 'path to shared parking program in your project folder')
+    #Create 1 command line argument for working directory
+    parser.add_argument('--dir', type = str, help = 'path to shared parking program in your project folder')
 
-#     #Return the given working directory
-#     return parser.parse_args()
+    #Return the given working directory
+    return parser.parse_args()
 
-def get_inputs():  
-    #Navigate to working directory where program and inputs are stored
-    # in_arg = get_working_directory()
-    os.chdir(r'C:\Users\joshu\Projects\SharedParkingCalculator\Inputs') 
-
+def get_inputs():
+    #Get working directory from command line input
+    in_arg = get_working_directory()
+    input_directory = in_arg.dir + '\Inputs'
+    os.chdir(input_directory)
+    
     #Import base parking demand from a CSV into a Pandas dataframe
     base_parking_demand = pd.read_csv('BaseParkingDemand.csv', index_col = 0)
 

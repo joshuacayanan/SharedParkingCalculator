@@ -55,15 +55,17 @@ Values for the above input files are usually based on industry guidance and/or e
 - Numpy
 - Pandas
 
-## Description of files
-Python files:
+## File Descriptions
+**Python files:**
 |filename     |description      |
 |---          |---              |
 |calculate_shared_parking.py| Calls functions to calculate weekday and weekend parking demand|
 |get_inputs.py| Two functions, one to get directory containing input and output folders from user terminal input and one function to read the input files|
 |LandUse.py| Contains LandUse Class and associated calculations, dataframe manipulations, and output formatting|
 
-Input files:
+<br>
+
+**Input files:**
 |filename     |description      |
 |---          |---              |
 |BaseParkingDemand.csv| Unadjusted parking demand for each land use class|
@@ -74,7 +76,9 @@ Input files:
 |TimeOfDayWeekday.csv| Adjustment factors for temporal demand variation for each land use class, one set of factors each for customers and employees, weekday values only|
 |TimeOfDayWeekend.csv| Adjustment factors for temporal demand variation for each land use class, one set of factors each for customers and employees, weekend values only|
 
-Output files:
+<br>
+
+**Output files:**
 |filename     |description      |
 |---          |---              |
 |WeekdayParking.xlsx| Spreadsheet grouped by month, contains weekday hourly parking demand broken down by land use class, contains total column |
